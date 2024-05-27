@@ -1,0 +1,15 @@
+version: 2.1
+jobs:
+  maven-build:
+    docker:
+      - image: cimg/openjdk:21.0.2
+    steps:
+      - checkout
+      - run:
+          command: mvn package
+      - store_test_results:
+          path: target/surefire-reports
+workflows:
+  build-and-package:
+    jobs:
+      - maven-build
