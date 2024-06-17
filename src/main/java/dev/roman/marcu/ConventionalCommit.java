@@ -1,10 +1,50 @@
-package dev.roman.marcu.git;
+package dev.roman.marcu;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public record ConventionalCommit(String type, boolean isBreakingChange, String scope, String description, String body,
-		Map<String, String> footers) {
+public class ConventionalCommit {
+
+	private final String type;
+	private final boolean isBreakingChange;
+	private final String scope;
+	private final String description;
+	private final String body;
+	private final Map<String, String> footers;
+
+	public ConventionalCommit(final String type, final boolean isBreakingChange, final String scope,
+			final String description, final String body, final Map<String, String> footers) {
+		this.type = type;
+		this.isBreakingChange = isBreakingChange;
+		this.scope = scope;
+		this.description = description;
+		this.body = body;
+		this.footers = footers;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public boolean isBreakingChange() {
+		return isBreakingChange;
+	}
+
+	public String getScope() {
+		return scope;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public String getBody() {
+		return body;
+	}
+
+	public Map<String, String> getFooters() {
+		return footers;
+	}
 
 	public static final class Builder {
 		String type;

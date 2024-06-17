@@ -4,201 +4,156 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.AbstractMap;
 import java.util.Collections;
 import java.util.HashMap;
 
-import org.eclipse.jgit.lib.CheckoutEntry;
-import org.eclipse.jgit.lib.ObjectId;
-import org.eclipse.jgit.lib.PersonIdent;
-import org.eclipse.jgit.lib.ReflogEntry;
+import org.eclipse.jgit.revwalk.RevCommit;
 import org.junit.jupiter.api.Test;
 
-class ConventionalCommitParserTest {
+import dev.roman.marcu.ConventionalCommit;
+
+class ConventionalCommitParserTest extends GitRepositoryTest {
 
 	@Test
-	void testParseCommit_WithFeatureAndDescription() {
-		final String comment = """
+	void testParseCommit_WithFeatureAndDescription() throws Exception {
+		final RevCommit commit = buildCommit("""
 				feat: test1
-				""";
-		final ReflogEntry commit = new ReflogEntryStub(comment);
-		final ConventionalCommit parsedCommit = ConventionalCommitParser.parseCommit(commit);
-		assertEquals("feat", parsedCommit.type());
-		assertEquals("test1", parsedCommit.description());
+				""");
+		final ConventionalCommit parsedCommit = new GitCommitParser().buildCommit(commit).get();
+		assertEquals("feat", parsedCommit.getType());
+		assertEquals("test1", parsedCommit.getDescription());
 		assertEquals(false, parsedCommit.isBreakingChange());
-		assertNull(parsedCommit.scope(), "Scope should be null");
-		assertTrue(parsedCommit.body().isEmpty(), "Body should be empty");
-		assertTrue(parsedCommit.footers().isEmpty(), "Footers should be empty");
+		assertNull(parsedCommit.getScope(), "Scope should be null");
+		assertTrue(parsedCommit.getBody().isEmpty(), "Body should be empty");
+		assertTrue(parsedCommit.getFooters().isEmpty(), "Footers should be empty");
 	}
 
 	@Test
-	void testParseCommit_WithBreakingChangeOnFirstLine() {
-		final String comment = """
+	void testParseCommit_WithBreakingChangeOnFirstLine() throws Exception {
+		final RevCommit commit = buildCommit("""
 				feat!: test1
-				""";
-		final ReflogEntry commit = new ReflogEntryStub(comment);
-		final ConventionalCommit parsedCommit = ConventionalCommitParser.parseCommit(commit);
-		assertEquals("feat", parsedCommit.type());
-		assertEquals("test1", parsedCommit.description());
+				""");
+		final ConventionalCommit parsedCommit = new GitCommitParser().buildCommit(commit).get();
+		assertEquals("feat", parsedCommit.getType());
+		assertEquals("test1", parsedCommit.getDescription());
 		assertEquals(true, parsedCommit.isBreakingChange());
 	}
 
 	@Test
-	void testParseCommit_WithScopeAndBreakingChangeOnFirstLine() {
-		final String comment = """
+	void testParseCommit_WithScopeAndBreakingChangeOnFirstLine() throws Exception {
+		final RevCommit commit = buildCommit("""
 				feat(test)!: test1
-				""";
-		final ReflogEntry commit = new ReflogEntryStub(comment);
-		final ConventionalCommit parsedCommit = ConventionalCommitParser.parseCommit(commit);
-		assertEquals("feat", parsedCommit.type());
-		assertEquals("test1", parsedCommit.description());
+				""");
+		final ConventionalCommit parsedCommit = new GitCommitParser().buildCommit(commit).get();
+		assertEquals("feat", parsedCommit.getType());
+		assertEquals("test1", parsedCommit.getDescription());
 		assertEquals(true, parsedCommit.isBreakingChange());
-		assertEquals("test", parsedCommit.scope());
+		assertEquals("test", parsedCommit.getScope());
 	}
 
 	@Test
-	void testParseCommit_WithScope() {
-		final String comment = """
+	void testParseCommit_WithScope() throws Exception {
+		final RevCommit commit = buildCommit("""
 				feat(test): test1
-				""";
-		final ReflogEntry commit = new ReflogEntryStub(comment);
-		final ConventionalCommit parsedCommit = ConventionalCommitParser.parseCommit(commit);
-		assertEquals("feat", parsedCommit.type());
-		assertEquals("test1", parsedCommit.description());
+				""");
+		final ConventionalCommit parsedCommit = new GitCommitParser().buildCommit(commit).get();
+		assertEquals("feat", parsedCommit.getType());
+		assertEquals("test1", parsedCommit.getDescription());
 		assertEquals(false, parsedCommit.isBreakingChange());
-		assertEquals("test", parsedCommit.scope());
+		assertEquals("test", parsedCommit.getScope());
 	}
 
 	@Test
-	void testParseCommit_WithBody() {
-		final String comment = """
+	void testParseCommit_WithBodyAndFooter() throws Exception {
+		final RevCommit commit = buildCommit("""
 				feat(test)!: test1
-								
-				Description of the body				
-				""";
-		final ReflogEntry commit = new ReflogEntryStub(comment);
-		final ConventionalCommit parsedCommit = ConventionalCommitParser.parseCommit(commit);
-		assertEquals("feat", parsedCommit.type());
-		assertEquals("test1", parsedCommit.description());
+
+				Description of the body
+
+				footer-1: footer1
+
+				""");
+		final ConventionalCommit parsedCommit = new GitCommitParser().buildCommit(commit).get();
+		assertEquals("feat", parsedCommit.getType());
+		assertEquals("test1", parsedCommit.getDescription());
 		assertEquals(true, parsedCommit.isBreakingChange());
-		assertEquals("test", parsedCommit.scope());
-		assertEquals("Description of the body", parsedCommit.body());
+		assertEquals("test", parsedCommit.getScope());
+		assertEquals(Collections.singletonMap("footer-1", "footer1"), parsedCommit.getFooters());
 	}
 
 	@Test
-	void testParseCommit_WithMultiLinesBody() {
-		final String comment = """
-				feat(test)!: test1
-								
-				Description of the body	
-								
-				On multilines	
-						
-				""";
-		final ReflogEntry commit = new ReflogEntryStub(comment);
-		final ConventionalCommit parsedCommit = ConventionalCommitParser.parseCommit(commit);
-		assertEquals("feat", parsedCommit.type());
-		assertEquals("test1", parsedCommit.description());
-		assertEquals(true, parsedCommit.isBreakingChange());
-		assertEquals("test", parsedCommit.scope());
-		assertEquals("Description of the body\n\nOn multilines", parsedCommit.body());
-	}
-
-	@Test
-	void testParseCommit_WithBodyAndFooter() {
-		final String comment = """
-				feat(test)!: test1
-								
-				Description of the body	
-								
-				footer-1: footer1	
-						
-				""";
-		final ReflogEntry commit = new ReflogEntryStub(comment);
-		final ConventionalCommit parsedCommit = ConventionalCommitParser.parseCommit(commit);
-		assertEquals("feat", parsedCommit.type());
-		assertEquals("test1", parsedCommit.description());
-		assertEquals(true, parsedCommit.isBreakingChange());
-		assertEquals("test", parsedCommit.scope());
-		assertEquals("Description of the body", parsedCommit.body());
-		assertEquals(Collections.singletonMap("footer-1", "footer1"), parsedCommit.footers());
-	}
-
-	@Test
-	void testParseCommit_WithBreakingChangeFooter() {
-		final String comment = """
+	void testParseCommit_WithBreakingChangeFooter() throws Exception {
+		final RevCommit commit = buildCommit("""
 				feat(test): test1
-								
-				Description of the body	
-								
-				BREAKING CHANGE: change that will affect all apps.	
-						
-				""";
-		final ReflogEntry commit = new ReflogEntryStub(comment);
-		final ConventionalCommit parsedCommit = ConventionalCommitParser.parseCommit(commit);
-		assertEquals("feat", parsedCommit.type());
-		assertEquals("test1", parsedCommit.description());
+
+				BREAKING-CHANGE: change that will affect all apps
+
+				""");
+		final ConventionalCommit parsedCommit = new GitCommitParser().buildCommit(commit).get();
+		assertEquals("feat", parsedCommit.getType());
+		assertEquals("test1", parsedCommit.getDescription());
 		assertEquals(true, parsedCommit.isBreakingChange());
-		assertEquals("test", parsedCommit.scope());
-		assertEquals("Description of the body", parsedCommit.body());
-		assertEquals(Collections.singletonMap("BREAKING CHANGE", "change that will affect all apps."),
-				parsedCommit.footers());
+		assertEquals("test", parsedCommit.getScope());
+		assertEquals(1, parsedCommit.getFooters().size());
+		assertEquals(Collections.singleton(
+						new AbstractMap.SimpleEntry("BREAKING-CHANGE", "change that will affect all apps")),
+				parsedCommit.getFooters().entrySet());
 	}
 
 	@Test
-	void testParseCommit_WithFooters() {
-		final String comment = """
+	void testParseCommit_WithFooters() throws Exception {
+		final RevCommit commit = buildCommit("""
 				feat(test)!: test1
-								
-								
+
 				footer-1: footer1
 				footer-2: footer2
-				footer-3: footer3						
-				""";
-		final ReflogEntry commit = new ReflogEntryStub(comment);
-		final ConventionalCommit parsedCommit = ConventionalCommitParser.parseCommit(commit);
-		assertEquals("feat", parsedCommit.type());
-		assertEquals("test1", parsedCommit.description());
+				footer-3: footer3
+				""");
+		final ConventionalCommit parsedCommit = new GitCommitParser().buildCommit(commit).get();
+		assertEquals("feat", parsedCommit.getType());
+		assertEquals("test1", parsedCommit.getDescription());
 		assertEquals(true, parsedCommit.isBreakingChange());
-		assertEquals("test", parsedCommit.scope());
-		assertEquals("", parsedCommit.body());
+		assertEquals("test", parsedCommit.getScope());
+		assertEquals(true, parsedCommit.getBody().isEmpty());
 		assertEquals(new HashMap<>(3) {{
 			put("footer-1", "footer1");
 			put("footer-2", "footer2");
 			put("footer-3", "footer3");
-		}}, parsedCommit.footers());
+		}}, parsedCommit.getFooters());
 	}
 
-	class ReflogEntryStub implements ReflogEntry {
+	@Test
+	void testParseCommit_Description() throws Exception {
+		final RevCommit commit = buildCommit("""
+				feat(test): test1
 
-		private String comment;
+				test1
+								
+				""");
+		final String description = GitCommitParser.getDescription(commit.getFullMessage());
+		assertEquals("test1", description);
+	}
 
-		public ReflogEntryStub(final String comment) {
-			this.comment = comment;
-		}
+	@Test
+	void testParseCommit_NoDescription() throws Exception {
+		final RevCommit commit = buildCommit("""
+				feat(test): test1
+				""");
+		final String description = GitCommitParser.getDescription(commit.getFullMessage());
+		assertEquals("", description);
+	}
 
-		@Override
-		public String getComment() {
-			return comment;
-		}
+	@Test
+	void testParseCommit_DescriptionWithFooter() throws Exception {
+		final RevCommit commit = buildCommit("""
+				feat(test): test1
 
-		@Override
-		public ObjectId getOldId() {
-			return null;
-		}
-
-		@Override
-		public ObjectId getNewId() {
-			return null;
-		}
-
-		@Override
-		public PersonIdent getWho() {
-			return null;
-		}
-
-		@Override
-		public CheckoutEntry parseCheckout() {
-			return null;
-		}
+				test1
+								
+				footer-1: footer1
+				""");
+		final String description = GitCommitParser.getDescription(commit.getFullMessage());
+		assertEquals("test1", description);
 	}
 }

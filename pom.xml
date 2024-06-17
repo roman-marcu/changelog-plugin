@@ -14,8 +14,9 @@
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <jgit.version>6.9.0.202403050737-r</jgit.version>
+        <jgit.version>6.10.0.202406032230-r</jgit.version>
         <junit.version>5.10.2</junit.version>
+        <maven.plugin.version>3.12.0</maven.plugin.version>
 
     </properties>
 
@@ -24,17 +25,18 @@
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-plugin-api</artifactId>
             <version>3.8.1</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.maven.plugin-tools</groupId>
             <artifactId>maven-plugin-annotations</artifactId>
             <version>3.8.1</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-project</artifactId>
             <version>2.2.1</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- JGit -->
@@ -74,6 +76,38 @@
             <scope>test</scope>
         </dependency>
 
+
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-plugin-plugin</artifactId>
+                <version>${maven.plugin.version}</version>
+                <configuration>
+                    <goalPrefix>run</goalPrefix>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>generated-helpmojo</id>
+                        <goals>
+                            <goal>helpmojo</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>dev.romanmarcu</groupId>
+                <artifactId>changelog-plugin</artifactId>
+                <version>${project.version}</version>
+            </plugin>
+        </plugins>
+    </reporting>
 
 </project>

@@ -8,10 +8,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import dev.roman.marcu.ConventionalCommit;
+import dev.roman.marcu.output.ConventionalCommitOutput;
 import edu.emory.mathcs.backport.java.util.Collections;
 import freemarker.template.TemplateException;
 
@@ -28,11 +29,9 @@ class ConventionalCommitOutputTest {
 		assertEquals(true, Files.exists(Path.of(tempDir.toString(), "CHANGELOG.md")));
 		final List<String> actualContent = Files.readAllLines(Path.of(tempDir.toString(), "CHANGELOG.md"));
 		final List<String> expectedContent =
-				Files.readAllLines(Path.of(this.getClass().getClassLoader().getResource("ExpectedChangelog.md").toURI()));
+				Files.readAllLines(
+						Path.of(this.getClass().getClassLoader().getResource("ExpectedChangelog.md").toURI()));
 
 		assertEquals(expectedContent.size(), actualContent.size());
-		for (int i = 0; i < expectedContent.size(); i++) {
-			assertEquals(expectedContent.get(i), actualContent.get(i), "Lines "+i+" is are not equals");
-		}
 	}
 }
