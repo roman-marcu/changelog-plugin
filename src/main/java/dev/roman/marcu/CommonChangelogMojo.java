@@ -9,10 +9,10 @@ import org.apache.maven.plugins.annotations.Parameter;
 
 public class CommonChangelogMojo<T, D> extends AbstractMojo {
 	final ConventionalCommitManager commitManager;
-	@Parameter(defaultValue = "${project.build.outputDirectory}")
-	String outputDirectory;
-	@Parameter(defaultValue = "CHANGELOG.md")
-	String template;
+	@Parameter(property = "template", required = true)
+	String templateFilePath;
+	@Parameter(property = "output", defaultValue = "${project.build.outputDirectory}/CHANGELOG.md")
+	String outputFilePath;
 	@Parameter(defaultValue = "${project.basedir}")
 	File projectDirectory;
 	@Parameter(property = "revision.start", readonly = true)
@@ -30,6 +30,6 @@ public class CommonChangelogMojo<T, D> extends AbstractMojo {
 		final Iterable<T> commitsIterator = commitManager.getCommits(projectDirectory, startRevision, endRevision);
 		commitsIterator.forEach(commit -> commitManager.convert(commit).ifPresent(c -> commits.add((D) c)));
 		getLog().debug("<<< Processed " + commits.size() + " commits");
-		commitManager.writeTo(template, outputDirectory, commits);
+		commitManager.writeTo(templateFilePath, outputFilePath, commits);
 	}
 }

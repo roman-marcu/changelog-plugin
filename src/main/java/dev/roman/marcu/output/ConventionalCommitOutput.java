@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.TimeZone;
 
 import dev.roman.marcu.ConventionalCommit;
+import dev.roman.marcu.output.freemarker.ExternalTemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -21,12 +22,13 @@ public class ConventionalCommitOutput {
 
 	static {
 		cfg.setDefaultEncoding("UTF-8");
-		cfg.setClassForTemplateLoading(ConventionalCommit.class, "/templates/");
+		//		cfg.setClassForTemplateLoading(ConventionalCommit.class, "/templates/");
 		cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
 		cfg.setLogTemplateExceptions(false);
 		cfg.setWrapUncheckedExceptions(true);
 		cfg.setFallbackOnNullLoopVariable(false);
 		cfg.setSQLDateAndTimeTimeZone(TimeZone.getDefault());
+		cfg.setTemplateLoader(new ExternalTemplateLoader());
 	}
 
 	private ConventionalCommitOutput() {
@@ -34,8 +36,8 @@ public class ConventionalCommitOutput {
 
 	public static void write(final List<ConventionalCommit> commits, final String templateName, final String path)
 			throws IOException, TemplateException {
-		final Template template = cfg.getTemplate(templateName + ".ftl");
-		try (Writer out = new OutputStreamWriter(new FileOutputStream(Paths.get(path, templateName).toFile()))) {
+		final Template template = cfg.getTemplate(templateName);
+		try (Writer out = new OutputStreamWriter(new FileOutputStream(Paths.get(path).toFile()))) {
 			template.process(Collections.singletonMap("commits", commits), out);
 		}
 	}

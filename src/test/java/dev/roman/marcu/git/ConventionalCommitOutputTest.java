@@ -23,11 +23,15 @@ class ConventionalCommitOutputTest {
 
 	@Test
 	void testWrite() throws TemplateException, IOException, URISyntaxException {
+		final Path outputFile = Path.of(tempDir.toString(), "CHANGELOG.md");
+		final Path templateFile = Path.of("src", "main", "resources", "templates", "CHANGELOG.md.ftl");
 		final ConventionalCommit commit = new ConventionalCommit("feat", false, "test", "Junit test", null, null);
-		ConventionalCommitOutput.write(Collections.singletonList(commit), "CHANGELOG.md", tempDir.toString());
+		ConventionalCommitOutput.write(Collections.singletonList(commit),
+				templateFile.toString(),
+				outputFile.toString());
 
-		assertEquals(true, Files.exists(Path.of(tempDir.toString(), "CHANGELOG.md")));
-		final List<String> actualContent = Files.readAllLines(Path.of(tempDir.toString(), "CHANGELOG.md"));
+		assertEquals(true, Files.exists(outputFile));
+		final List<String> actualContent = Files.readAllLines(outputFile);
 		final List<String> expectedContent =
 				Files.readAllLines(
 						Path.of(this.getClass().getClassLoader().getResource("ExpectedChangelog.md").toURI()));
