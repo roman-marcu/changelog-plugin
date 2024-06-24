@@ -9,13 +9,11 @@ Description
 ---------------
 You have found a bug or you have an idea for a cool new feature? Just contribute.
 
-All the commit that will not follow the format will be ignored.
-
 Test usage
 ---------------
 
 ```
-./mvnw dev.romanmarcu:changelog-plugin:git-changelog -Dtemplate="<your path>
+./mvnw io.github.roman-marcu:changelog-plugin:git-changelog -Dtemplate="<your path>
 /changelog-plugin/src/main/resources/templates/CHANGELOG.md.ftl" -Doutput="CHANGELOG.md"
 ```
 
