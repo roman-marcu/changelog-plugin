@@ -4,34 +4,44 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>dev.romanmarcu</groupId>
+    <groupId>io.github.roman-marcu</groupId>
     <artifactId>changelog-plugin</artifactId>
     <packaging>maven-plugin</packaging>
     <version>1.0-SNAPSHOT</version>
 
-    <name>Changelog Plugin</name>
+    <name>Maven changelog plugin</name>
     <description>Changelog generator plugin for maven</description>
     <url>https://github.com/roman-marcu/changelog-plugin</url>
     <inceptionYear>2024</inceptionYear>
     <licenses>
         <license>
             <name>GNU General Public License v3.0</name>
-            <url>https://raw.githubusercontent.com/roman-marcu/changelog-plugin/main/LICENSE</url>
-            <distribution>repo</distribution>
+            <url>https://www.gnu.org/licenses/gpl-3.0.html</url>
         </license>
     </licenses>
     <developers>
         <developer>
-            <id>rmarcu</id>
             <name>Roman Marcu</name>
             <email>roman.marcu@gmail.com</email>
         </developer>
     </developers>
     <scm>
         <connection>scm:git:git://github.com/roman-marcu/changelog-plugin.git</connection>
+        <developerConnection>scm:git:ssh://github.com/roman-marcu/changelog-plugin.git</developerConnection>
         <url>https://github.com/roman-marcu/changelog-plugin</url>
         <tag>HEAD</tag>
     </scm>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
@@ -41,6 +51,13 @@
         <jgit.version>6.10.0.202406032230-r</jgit.version>
         <junit.version>5.10.2</junit.version>
         <maven.plugin.version>3.12.0</maven.plugin.version>
+
+        <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
+        <maven-gpg-plugin.version>3.2.4</maven-gpg-plugin.version>
+        <maven-release-plugin.version>3.0.1</maven-release-plugin.version>
+        <nexus-staging-plugin.version>1.6.13</nexus-staging-plugin.version>
+        <central-publishing-plugin.version>0.4.0</central-publishing-plugin.version>
+
     </properties>
 
     <dependencies>
@@ -120,21 +137,65 @@
                     </execution>
                 </executions>
             </plugin>
-        </plugins>
-    </build>
-
-    <reporting>
-        <plugins>
             <plugin>
-                <groupId>dev.romanmarcu</groupId>
-                <artifactId>changelog-plugin</artifactId>
-                <version>${project.version}</version>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>${maven-release-plugin.version}</version>
                 <configuration>
-                    <templateFilePath>/C:/stuff/changelog-plugin/src/main/resources/templates/CHANGELOG.md_en_US.ftl
-                    </templateFilePath>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <useReleaseProfile>false</useReleaseProfile>
+                    <releaseProfiles>release</releaseProfiles>
+                    <goals>deploy</goals>
+                    <username>git</username>
                 </configuration>
             </plugin>
         </plugins>
-    </reporting>
+    </build>
 
+    <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>${maven-source-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                        <version>${central-publishing-plugin.version}</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <publishingServerId>central</publishingServerId>
+                            <tokenEnabled>true</tokenEnabled>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>${maven-gpg-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
