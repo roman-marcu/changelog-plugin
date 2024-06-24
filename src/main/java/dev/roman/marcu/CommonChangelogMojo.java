@@ -20,6 +20,9 @@ public class CommonChangelogMojo<T, D> extends AbstractMojo {
 	@Parameter(property = "revision.end", readonly = true, defaultValue = "HEAD")
 	String endRevision;
 
+	@Parameter(property = "project.version", readonly = true, defaultValue = "${project.version}")
+	String projectVersion;
+
 	public CommonChangelogMojo(final ConventionalCommitManager commitManager) {
 		this.commitManager = commitManager;
 	}
@@ -30,6 +33,6 @@ public class CommonChangelogMojo<T, D> extends AbstractMojo {
 		final Iterable<T> commitsIterator = commitManager.getCommits(projectDirectory, startRevision, endRevision);
 		commitsIterator.forEach(commit -> commitManager.convert(commit).ifPresent(c -> commits.add((D) c)));
 		getLog().debug("<<< Processed " + commits.size() + " commits");
-		commitManager.writeTo(templateFilePath, outputFilePath, commits);
+		commitManager.writeTo(templateFilePath, outputFilePath, projectVersion, commits);
 	}
 }

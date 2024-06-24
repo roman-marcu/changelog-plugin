@@ -21,6 +21,7 @@ import dev.roman.marcu.ConventionalCommit;
 import dev.roman.marcu.ConventionalCommitManager;
 import dev.roman.marcu.exceptions.CommitReadingException;
 import dev.roman.marcu.exceptions.CommitWritingException;
+import dev.roman.marcu.output.ConventionalCommitModel;
 import dev.roman.marcu.output.ConventionalCommitOutput;
 import freemarker.template.TemplateException;
 
@@ -85,9 +86,10 @@ public class GitCommitManager implements ConventionalCommitManager<RevCommit, Co
 
 	@Override
 	public void writeTo(final String template, final String outputDirectory,
-			final List<ConventionalCommit> commits) {
+			final String projectVersion, final List<ConventionalCommit> commits) {
 		try {
-			ConventionalCommitOutput.write(commits, template, outputDirectory);
+			ConventionalCommitModel model = new ConventionalCommitModel(projectVersion, commits);
+			ConventionalCommitOutput.write(model, template, outputDirectory);
 		} catch (IOException | TemplateException e) {
 			throw new CommitWritingException(e);
 		}

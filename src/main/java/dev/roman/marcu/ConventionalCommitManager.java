@@ -9,5 +9,5 @@ public interface ConventionalCommitManager<T, D> {
 
 	Optional<D> convert(T commit);
 
-	void writeTo(String template, String outputDirectory, List<D> commits);
+	void writeTo(String template, String outputDirectory, String version, List<D> commits);
 }
