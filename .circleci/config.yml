@@ -19,17 +19,18 @@ jobs:
       - run:
           command: mvn --batch-mode release:perform
 workflows:
-  build-and-package:
+  commit:
     jobs:
-      - maven-build
+      - maven-build:
+          filters:
+            branches:
+              ignore: /^release$/
   release:
     jobs:
       - maven-release:
-          requires:
-            - maven-build
           filters:
             branches:
-              only: /^main$/
+              only: /^release$/
             tags:
               only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
 
