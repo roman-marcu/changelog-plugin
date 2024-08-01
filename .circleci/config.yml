@@ -12,11 +12,6 @@ jobs:
   maven-release:
     requires:
       - maven-build
-    filters:
-      branches:
-        only: /^main$/
-      tags:
-        only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
     docker:
       - image: cimg/openjdk:21.0.2
     steps:
@@ -30,5 +25,10 @@ workflows:
     jobs:
       - maven-build
   release:
+    filters:
+      branches:
+        only: /^main$/
+      tags:
+        only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
     jobs:
       - maven-release
