@@ -9,7 +9,28 @@ jobs:
           command: mvn package
       - store_test_results:
           path: target/surefire-reports
+  maven-release:
+    docker:
+      - image: cimg/openjdk:21.0.2
+    steps:
+      - checkout
+      - run:
+          command: mvn --batch-mode release:clean release:prepare
+      - run:
+          command: mvn --batch-mode release:perform
 workflows:
-  build-and-package:
+  commit:
     jobs:
-      - maven-build
+      - maven-build:
+          filters:
+            branches:
+              ignore: /^release$/
+  release:
+    jobs:
+      - maven-release:
+          filters:
+            branches:
+              only: /^release$/
+            tags:
+              only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
+
