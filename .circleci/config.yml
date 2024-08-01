@@ -13,9 +13,9 @@ jobs:
     docker:
       - image: cimg/openjdk:21.0.2
     steps:
-      - prepare:
+      - run:
           command: mvn release:clean release:prepare
-      - perform:
+      - run:
           command: mvn release:perform
 workflows:
   build-and-package:
