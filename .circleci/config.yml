@@ -10,6 +10,13 @@ jobs:
       - store_test_results:
           path: target/surefire-reports
   maven-release:
+    requires:
+      - maven-build
+    filters:
+      branches:
+        ignore: /.*/
+      tags:
+        only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
     docker:
       - image: cimg/openjdk:21.0.2
     steps:
