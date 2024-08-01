@@ -15,9 +15,9 @@ jobs:
     steps:
       - checkout
       - run:
-          command: mvn release:clean release:prepare
+          command: mvn --batch-mode release:clean release:prepare
       - run:
-          command: mvn release:perform
+          command: mvn --batch-mode release:perform
 workflows:
   build-and-package:
     jobs:
