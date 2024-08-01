@@ -10,8 +10,6 @@ jobs:
       - store_test_results:
           path: target/surefire-reports
   maven-release:
-    requires:
-      - maven-build
     docker:
       - image: cimg/openjdk:21.0.2
     steps:
@@ -25,6 +23,8 @@ workflows:
     jobs:
       - maven-build
   release:
+    requires:
+      - maven-build
     filters:
       branches:
         only: /^main$/
