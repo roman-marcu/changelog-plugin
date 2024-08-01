@@ -24,12 +24,12 @@ workflows:
       - maven-build
   release:
     jobs:
-      - maven-release
-    requires:
-      - maven-build
-    filters:
-      branches:
-        only: /^main$/
-      tags:
-        only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
+      - maven-release:
+          requires:
+            - maven-build
+          filters:
+            branches:
+              only: /^main$/
+            tags:
+              only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
 
