@@ -16,7 +16,7 @@ jobs:
       - checkout
       - run:
           name: set environment variables
-          command: 'git config --global user.email "roman.marcu@gmail.com" && git config --global user.name "RomanMarcu"'
+          command: 'git config --global user.email "roman.marcu@gmail.com" && git config --global user.name "RomanMarcu" && git config --global user.signingkey 86D77D745FB28C21'
       - run:
           name: prepare release
           command: mvn --batch-mode release:clean release:prepare
