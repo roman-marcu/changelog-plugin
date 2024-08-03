@@ -55,11 +55,11 @@ workflows:
             branches:
               only: /release.*/
             tags:
-              ignore: /[maven-release-plugin].*/
+              ignore: /*.maven-release-plugin.*/
       - maven-release:
           filters:
             branches:
               only: /release.*/
             tags:
-              only: /[maven-release-plugin] prepare release.*/
+              only: /*.prepare release.*/
 
