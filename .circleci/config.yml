@@ -31,8 +31,11 @@ jobs:
     steps:
       - checkout
       - run:
+          name: setTTY
+          command: 'export GPG_TTY=$(tty)'
+      - run:
           name: GPG configurations
-          command: 'export GPG_TTY=$(tty) && echo -n "$GPG_SIGNING_KEY" | base64 --decode | gpg --batch --passphrase $$GPG_SIGNING_PASS --import'
+          command: 'echo -n "$GPG_SIGNING_KEY" | base64 --decode | gpg --batch --passphrase $$GPG_SIGNING_PASS --import'
       - run:
           name: set environment variables
           command: 'git config --global user.email "roman.marcu@gmail.com" \ 
