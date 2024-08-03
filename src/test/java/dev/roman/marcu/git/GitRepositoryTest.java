@@ -9,6 +9,7 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.util.SystemReader;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.io.TempDir;
@@ -32,6 +33,7 @@ public class GitRepositoryTest {
 
 	@BeforeAll
 	public static void setUp() throws Exception {
+		SystemReader.getInstance().getUserConfig().clear();
 		git = Git.open(initRepo());
 	}
 
