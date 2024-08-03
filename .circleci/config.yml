@@ -9,7 +9,7 @@ jobs:
           command: mvn package
       - store_test_results:
           path: target/surefire-reports
-  maven-release:
+  maven-prepare-release:
     docker:
       - image: cimg/openjdk:21.0.2
     steps:
@@ -25,6 +25,19 @@ jobs:
       - run:
           name: prepare release
           command: mvn --batch-mode release:clean release:prepare
+  maven-release:
+    docker:
+      - image: cimg/openjdk:21.0.2
+    steps:
+      - checkout
+      - run:
+          name: GPG configurations
+          command: 'echo -n "$GPG_SIGNING_KEY" | base64 --decode | gpg --import'
+      - run:
+          name: set environment variables
+          command: 'git config --global user.email "roman.marcu@gmail.com" \ 
+          && git config --global user.name "RomanMarcu" \
+          && git config --global user.signingkey $GPG_SIGNING_KEY_ID'
       - run:
           name: perform release
           command: mvn --batch-mode release:perform
@@ -37,7 +50,11 @@ workflows:
               ignore: /release.*/
   release:
     jobs:
-      - maven-release:
+      - maven-prepare-release:
           filters:
             branches:
               only: /release.*/
+      - maven-release:
+          filters:
+            branches:
+              only: /testrelease.*/
