@@ -18,7 +18,6 @@ jobs:
           name: set environment variables
           command: 'git config --global user.email "roman.marcu@gmail.com" \ 
           && git config --global user.name "RomanMarcu" \
-          && git config --global commit.gpgsign true \
           && git config --global user.signingkey 86D77D745FB28C21'
       - run:
           name: prepare release
