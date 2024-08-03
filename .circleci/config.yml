@@ -16,7 +16,7 @@ jobs:
       - checkout
       - run:
           name: GPG configurations
-          command: 'echo -n "$GPG_SIGNING_KEY" | base64 --decode | gpg --import'
+          command: 'echo -n "$GPG_SIGNING_KEY" | base64 --decode | gpg --batch --passphrase $GPG_SIGNING_PASS --import'
       - run:
           name: set environment variables
           command: 'git config --global user.email "roman.marcu@gmail.com" \ 
@@ -30,9 +30,6 @@ jobs:
       - image: cimg/openjdk:21.0.2
     steps:
       - checkout
-      - run:
-          name: Set TTY
-          command: 'export GPG_TTY=$(tty)'
       - run:
           name: GPG configurations
           command: 'echo -n "$GPG_SIGNING_KEY" | base64 --decode | gpg --batch --passphrase $GPG_SIGNING_PASS --import'
