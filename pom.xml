@@ -5,7 +5,7 @@
     <groupId>io.github.roman-marcu</groupId>
     <artifactId>changelog-plugin</artifactId>
     <packaging>maven-plugin</packaging>
-    <version>0.38.0-SNAPSHOT</version>
+    <version>0.38.0</version>
 
     <name>Maven changelog plugin</name>
     <description>Changelog generator plugin for maven</description>
@@ -27,7 +27,7 @@
         <connection>scm:git:git://github.com/roman-marcu/changelog-plugin.git</connection>
         <developerConnection>scm:git:ssh://github.com/roman-marcu/changelog-plugin.git</developerConnection>
         <url>https://github.com/roman-marcu/changelog-plugin</url>
-        <tag>HEAD</tag>
+        <tag>changelog-plugin-0.38.0</tag>
     </scm>
 
     <distributionManagement>
