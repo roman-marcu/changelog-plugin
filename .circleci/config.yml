@@ -37,7 +37,7 @@ jobs:
           name: set environment variables
           command: 'git config --global user.email "roman.marcu@gmail.com" \ 
           && git config --global user.name "RomanMarcu" \
-          && git config --global user.signingkey $GPG_SIGNING_KEY_ID'
+          && git config --global user.signingkey $GPG_SIGNING_KEY_ID '
       - run:
           name: perform release
           command: mvn --batch-mode release:perform
