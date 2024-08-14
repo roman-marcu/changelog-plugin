@@ -1,4 +1,7 @@
 version: 2.1
+orbs:
+  circleci-maven-release-orb: sonatype-nexus-community/circleci-maven-release-orb@x.y.z
+
 jobs:
   maven-build:
     docker:
@@ -9,25 +12,6 @@ jobs:
           command: mvn package
       - store_test_results:
           path: target/surefire-reports
-  maven-release:
-    docker:
-      - image: cimg/openjdk:21.0.2
-    steps:
-      - checkout
-      - run:
-          name: GPG configurations
-          command: 'echo -n "$GPG_SIGNING_KEY" | base64 --decode | gpg --batch --passphrase $GPG_SIGNING_PASS --import'
-      - run:
-          name: Setup git
-          command: 'git config --global user.email "roman.marcu@gmail.com" \ 
-          && git config --global user.name "RomanMarcu" \
-          && git config --global user.signingkey $GPG_SIGNING_KEY_ID'
-      - run:
-          name: Prepare release
-          command: mvn --batch-mode release:clean release:prepare -DscmCommentPrefix="[skip ci] [maven-release-plugin] "
-      - run:
-          name: perform release
-          command: mvn --batch-mode release:perform -X
 workflows:
   commit:
     jobs:
@@ -37,7 +21,8 @@ workflows:
               ignore: /release.*/
   release:
     jobs:
-      - maven-release:
+      - circleci-maven-release-orb/run-maven-release:
+          ssh-fingerprints: SHA256:D53tXKajLodz4uKksk/fhRlUtLl3DwgSNxoK5n+lJR8
           filters:
             branches:
               only: /release.*/
