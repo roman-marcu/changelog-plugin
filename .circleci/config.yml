@@ -12,6 +12,7 @@ jobs:
           command: mvn package
       - store_test_results:
           path: target/surefire-reports
+          
 workflows:
   commit:
     jobs:
