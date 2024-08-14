@@ -12,7 +12,7 @@ jobs:
           command: mvn package
       - store_test_results:
           path: target/surefire-reports
-          
+
 workflows:
   commit:
     jobs:
@@ -23,7 +23,7 @@ workflows:
   release:
     jobs:
       - circleci-maven-release-orb/run-maven-release:
-          ssh-fingerprints: SHA256:D53tXKajLodz4uKksk/fhRlUtLl3DwgSNxoK5n+lJR8
+          ssh-fingerprints: "SHA256:D53tXKajLodz4uKksk/fhRlUtLl3DwgSNxoK5n+lJR8"
           filters:
             branches:
               only: /release.*/
