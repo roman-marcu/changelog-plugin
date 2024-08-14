@@ -27,7 +27,7 @@ jobs:
           command: mvn --batch-mode release:clean release:prepare -DscmCommentPrefix="[skip ci] [maven-release-plugin] "
       - run:
           name: perform release
-          command: mvn --batch-mode release:perform
+          command: mvn --batch-mode release:perform -X
 workflows:
   commit:
     jobs:
