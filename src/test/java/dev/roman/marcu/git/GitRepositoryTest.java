@@ -47,6 +47,7 @@ public class GitRepositoryTest {
 	protected static RevCommit buildCommit(String message) throws Exception {
 		RevCommit commit = git.commit().setMessage(message).call();
 		assertNotNull(commit);
+		
 		return commit;
 	}
 
