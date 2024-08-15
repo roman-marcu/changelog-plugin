@@ -15,7 +15,7 @@ jobs:
     steps:
       - add_ssh_keys:
           fingerprints:
-            - "SHA256:D53tXKajLodz4uKksk/fhRlUtLl3DwgSNxoK5n+lJR8"
+            - "SHA256:PhZfCwNBzmDx1Ba6h2PEueFqlVD0sBqJeghG6miNtTw"
       - checkout
       - run:
           name: GPG configurations
