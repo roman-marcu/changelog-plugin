@@ -19,8 +19,8 @@ jobs:
       - run:
           name: Install packages
           command: |
-            apt-get update -y
-            apt-get install -y pinentry-gtk2
+            sudo apt-get update -y
+            sudo apt-get install -y pinentry-gtk2
       - checkout
       - run:
           name: GPG configurations
