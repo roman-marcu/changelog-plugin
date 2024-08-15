@@ -9,7 +9,7 @@ jobs:
           command: mvn package
       - store_test_results:
           path: target/surefire-reports
-  maven-prepare-release:
+  maven-release:
     docker:
       - image: cimg/openjdk:21.0.2
     steps:
