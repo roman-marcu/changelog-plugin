@@ -38,7 +38,7 @@ jobs:
               cat release.properties
             fi
             echo "Performing release..."
-            mvn --batch-mode release:perform
+            mvn --batch-mode release:perform -e
             echo "Release completed"
             MVN_VERSION_NEXT_DEV=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
             echo "New development version ${MVN_VERSION_NEXT_DEV}"
