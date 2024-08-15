@@ -26,10 +26,7 @@ jobs:
           && git config --global user.name "RomanMarcu" \
           && git config --global user.signingkey $GPG_SIGNING_KEY_ID'
       - run:
-          name: Prepare release
-          command:
-      - run:
-          name: perform release
+          name: Perform release
           command: |
             echo "Starting new release..."
             MVN_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
