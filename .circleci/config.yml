@@ -16,6 +16,11 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - "SHA256:D53tXKajLodz4uKksk/fhRlUtLl3DwgSNxoK5n+lJR8"
+      - run:
+          name: Install packages
+          command: |
+            apt-get update -y
+            apt-get install -y pinentry-gtk2
       - checkout
       - run:
           name: GPG configurations
