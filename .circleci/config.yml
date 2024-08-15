@@ -20,7 +20,7 @@ jobs:
           name: Install packages
           command: |
             sudo apt-get update -y
-            sudo apt-get install -y pinentry
+            sudo apt-get install -y pinentry-tty
       - checkout
       - run:
           name: GPG configurations
