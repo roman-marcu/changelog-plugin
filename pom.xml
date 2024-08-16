@@ -53,6 +53,7 @@
         <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
         <maven-gpg-plugin.version>3.2.4</maven-gpg-plugin.version>
         <maven-release-plugin.version>3.0.1</maven-release-plugin.version>
+        <maven-javadoc-plugin.version>3.6.3</maven-javadoc-plugin.version>
         <nexus-staging-plugin.version>1.6.13</nexus-staging-plugin.version>
         <central-publishing-plugin.version>0.5.0</central-publishing-plugin.version>
 
@@ -156,6 +157,21 @@
             <id>release</id>
             <build>
                 <plugins>
+                    <!-- Maven Javadoc Plugin -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>${maven-javadoc-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
