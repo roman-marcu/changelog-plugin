@@ -18,8 +18,6 @@ jobs:
             - "SHA256:ofo1klWl56Pn8SKWhwgI0KpQ+mVIICcKv8P388G3xyw"
       - checkout
       - run:
-          command: mvn package
-      - run:
           name: GPG configurations
           command: 'echo -n "$GPG_SIGNING_KEY" | base64 --decode | gpg --batch --no-tty --import --yes'
       - run:
@@ -33,14 +31,14 @@ jobs:
             echo "Starting new release..."
             MVN_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
             echo "Preparing release from version ${MVN_VERSION}..."
-            mvn --batch-mode release:clean release:prepare -DscmCommentPrefix="[skip ci] [maven-release-plugin] "
+            mvn --batch-mode release:clean release:prepare  -Prelease -DscmCommentPrefix="[skip ci] [maven-release-plugin] "
             if [ -f "release.properties" ]; then
               #echo "true" >> releasePropsCreated
               echo "Generated release.properties: ..."
               cat release.properties
             fi
             echo "Performing release..."
-            mvn --batch-mode release:perform -s .circleci/maven_settings.xml
+            mvn --batch-mode release:perform -Prelease -s .circleci/maven_settings.xml
             echo "Release completed"
             MVN_VERSION_NEXT_DEV=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
             echo "New development version ${MVN_VERSION_NEXT_DEV}"
