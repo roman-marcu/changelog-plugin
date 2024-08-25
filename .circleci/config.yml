@@ -29,10 +29,9 @@ jobs:
           name: Perform release
           command: |
             echo "Starting new release..."
-            ssh-keyscan github.com
             MVN_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
             echo "Preparing release from version ${MVN_VERSION}..."
-            mvn --batch-mode release:clean release:prepare  -Prelease -DscmCommentPrefix="[skip ci] [maven-release-plugin] "
+            mvn --batch-mode release:clean release:prepare -X -Prelease -DscmCommentPrefix="[skip ci] [maven-release-plugin] "
             if [ -f "release.properties" ]; then
               #echo "true" >> releasePropsCreated
               echo "Generated release.properties: ..."
