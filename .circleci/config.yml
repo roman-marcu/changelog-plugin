@@ -23,7 +23,7 @@ jobs:
       - run:
           name: Setup git
           command: 'git config --global user.email "roman.marcu@gmail.com" \ 
-          && git config --global user.name "RomanMarcu" \
+          && git config --global user.name "roman-marcu" \
           && git config --global user.signingkey $GPG_SIGNING_KEY_ID'
       - run:
           name: Perform release
