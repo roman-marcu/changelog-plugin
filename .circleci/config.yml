@@ -21,10 +21,6 @@ jobs:
           name: GPG configurations
           command: 'echo -n "$GPG_SIGNING_KEY" | base64 --decode | gpg --batch --no-tty --import --yes'
       - run:
-          name: Setup git
-          command: 'git config --global user.email "roman.marcu@gmail.com" \ 
-          && git config --global user.name "RomanMarcu"'
-      - run:
           name: Perform release
           command: |
             echo "Starting new release..."
