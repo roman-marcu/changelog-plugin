@@ -32,14 +32,12 @@
 
     <distributionManagement>
         <snapshotRepository>
-            <id>snapshot-repo</id>
-            <name>Nexus Snapshot Repository</name>
-            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+            <id>central</id>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
         </snapshotRepository>
         <repository>
-            <id>releases-repo</id>
-            <name>Nexus Release Repository</name>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+            <id>central</id>
+            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
     </distributionManagement>
 
@@ -145,37 +143,10 @@
                 <configuration>
                     <projectVersionPolicyId>SemVerVersionPolicy</projectVersionPolicyId>
                     <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <useReleaseProfile>false</useReleaseProfile>
                     <releaseProfiles>release</releaseProfiles>
                     <goals>deploy</goals>
                     <username>git</username>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>${maven-javadoc-plugin.version}</version>
-                <configuration>
-                    <destDir>javadoc/latest</destDir>
-                    <author>false</author>
-                    <version>false</version>
-                    <detectLinks>false</detectLinks>
-                    <linksource>true</linksource>
-                    <keywords>true</keywords>
-                    <use>true</use>
-                    <windowtitle>Changelog Plugin</windowtitle>
-                    <encoding>UTF-8</encoding>
-                    <locale>en</locale>
-                    <javadocVersion>${maven.compiler.target}</javadocVersion>
-                    <javaApiLinks>
-                        <property>
-                            <name>api_${maven.compiler.target}</name>
-                            <value>http://docs.oracle.com/javase/${maven.compiler.target}.0/docs/api/</value>
-                        </property>
-                    </javaApiLinks>
-                    <verbose>true</verbose>
-                    <minmemory>32m</minmemory>
-                    <maxmemory>128m</maxmemory>
-                    <failOnError>true</failOnError>
                 </configuration>
             </plugin>
         </plugins>
