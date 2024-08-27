@@ -146,6 +146,7 @@
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                     <releaseProfiles>release</releaseProfiles>
                     <goals>deploy</goals>
+                    <username>Roman Marcu</username>
                 </configuration>
             </plugin>
         </plugins>
