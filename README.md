@@ -9,7 +9,6 @@ Description
 ---------------
 You have found a bug or you have an idea for a cool new feature? Just contribute.
 
-
 Test usage
 ---------------
 
