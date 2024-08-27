@@ -146,7 +146,7 @@
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                     <releaseProfiles>release</releaseProfiles>
                     <goals>deploy</goals>
-                    <username>Roman Marcu</username>
+                    <username>git</username>
                 </configuration>
             </plugin>
         </plugins>
