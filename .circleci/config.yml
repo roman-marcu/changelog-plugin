@@ -15,22 +15,40 @@ jobs:
     steps:
       - checkout
       - run:
-          command: mvn --batch-mode release:clean release:prepare
+          name: GPG configurations
+          command: 'echo -n "$GPG_SIGNING_KEY" | base64 --decode | gpg --batch --no-tty --import --yes'
       - run:
-          command: mvn --batch-mode release:perform
+          name: Setup git
+          command: 'git config --global user.email "roman.marcu@gmail.com" \ 
+          && git config --global user.name "Roman Marcu" \
+          && git config --global user.signingkey $GPG_SIGNING_KEY_ID'
+      - run:
+          name: Perform release
+          command: |
+            echo "Starting new release..."
+            MVN_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+            echo "Preparing release from version ${MVN_VERSION}..."
+            mvn --batch-mode release:clean release:prepare -Prelease -DscmCommentPrefix="[skip ci] [maven-release-plugin] "
+            if [ -f "release.properties" ]; then
+              #echo "true" >> releasePropsCreated
+              echo "Generated release.properties: ..."
+              cat release.properties
+            fi
+            echo "Performing release..."
+            mvn --batch-mode release:perform -P release -s .circleci/maven_settings.xml
+            echo "Release completed"
+            MVN_VERSION_NEXT_DEV=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+            echo "New development version ${MVN_VERSION_NEXT_DEV}"
 workflows:
   commit:
     jobs:
       - maven-build:
           filters:
             branches:
-              ignore: /^release$/
+              ignore: /release.*/
   release:
     jobs:
       - maven-release:
           filters:
             branches:
-              only: /^release$/
-            tags:
-              only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
-
+              only: /release.*/
