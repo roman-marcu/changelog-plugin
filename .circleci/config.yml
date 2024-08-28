@@ -39,6 +39,14 @@ jobs:
             echo "Release completed"
             MVN_VERSION_NEXT_DEV=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
             echo "New development version ${MVN_VERSION_NEXT_DEV}"
+
+release-tag-only: &release-tag-only
+  filters:
+    tags:
+      only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
+    branches:
+      only: main
+
 workflows:
   commit:
     jobs:
@@ -50,18 +58,8 @@ workflows:
   release:
     jobs:
       - build_and_test:
-          filters:
-            branches:
-              only: main
-            tags:
-              only:
-                - /^v.*/
+          <<: *release-tag-only
       - release:
+          <<: *release-tag-only
           requires:
             - build_and_test
-          filters:
-            branches:
-              only: main
-            tags:
-              only:
-                - /^v.*/
