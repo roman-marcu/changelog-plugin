@@ -1,6 +1,6 @@
 version: 2.1
 jobs:
-  maven-build:
+  build_and_test:
     docker:
       - image: cimg/openjdk:21.0.2
     steps:
@@ -9,7 +9,7 @@ jobs:
           command: mvn package
       - store_test_results:
           path: target/surefire-reports
-  maven-release:
+  release:
     docker:
       - image: cimg/openjdk:21.0.2
     steps:
@@ -28,7 +28,7 @@ jobs:
             echo "Starting new release..."
             MVN_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
             echo "Preparing release from version ${MVN_VERSION}..."
-            mvn --batch-mode release:clean release:prepare -Prelease -DscmCommentPrefix="[skip ci] [maven-release-plugin] "
+            mvn --batch-mode release:clean release:prepare -P release -DscmCommentPrefix="[skip ci]"
             if [ -f "release.properties" ]; then
               #echo "true" >> releasePropsCreated
               echo "Generated release.properties: ..."
@@ -42,13 +42,20 @@ jobs:
 workflows:
   commit:
     jobs:
-      - maven-build:
+      - build_and_test:
           filters:
-            branches:
-              ignore: /release.*/
+            tags:
+              ignore:
+                - /^v.*/
   release:
     jobs:
-      - maven-release:
+      - build_and_test:
           filters:
             branches:
-              only: /release.*/
+              only: main
+            tags:
+              only:
+                - /^v.*/
+      - release:
+          requires:
+            - build_and_test
