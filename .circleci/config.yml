@@ -47,15 +47,18 @@ release-tag-only: &release-tag-only
     branches:
       only:
         - main
+not-release-tag: &not-release-tag
+  filters:
+    tags:
+      ignore: /^v[0-9]+\.[0-9]+\.[0-9]+$/
+    branches:
+      only: /.*/
 
 workflows:
   commit:
     jobs:
       - build_and_test:
-          filters:
-            tags:
-              ignore:
-                - /^v.*/
+          <<: *not-release-tag
   release:
     jobs:
       - build_and_test:
