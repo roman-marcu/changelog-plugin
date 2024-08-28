@@ -45,7 +45,8 @@ release-tag-only: &release-tag-only
     tags:
       only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
     branches:
-      only: main
+      only:
+        - main
 
 workflows:
   commit:
