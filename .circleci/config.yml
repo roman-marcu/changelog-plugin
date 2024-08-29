@@ -40,30 +40,17 @@ jobs:
             MVN_VERSION_NEXT_DEV=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
             echo "New development version ${MVN_VERSION_NEXT_DEV}"
 
-release-tag-only: &release-tag-only
-  filters:
-    tags:
-      only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
-    branches:
-      only:
-        - main
-not-release-tag: &not-release-tag
-  filters:
-    tags:
-      ignore: /^v[0-9]+\.[0-9]+\.[0-9]+$/
-    branches:
-      only: /.*/
-
 workflows:
   commit:
+    when:
+      equal: [ "", << pipeline.git.tag >> ]
     jobs:
-      - build_and_test:
-          <<: *not-release-tag
+      - build_and_test
   release:
+    when:
+      matches: { pattern: "^v[0-9]", value: << pipeline.git.tag >> }
     jobs:
-      - build_and_test:
-          <<: *release-tag-only
+      - build_and_test
       - release:
-          <<: *release-tag-only
           requires:
             - build_and_test
