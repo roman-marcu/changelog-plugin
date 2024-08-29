@@ -1,10 +1,12 @@
 package dev.roman.marcu.output;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.file.Paths;
+import java.util.Locale;
 import java.util.TimeZone;
 
 import dev.roman.marcu.output.freemarker.ExternalTemplateLoader;
@@ -19,22 +21,25 @@ public class ConventionalCommitOutput {
 
 	static {
 		cfg.setDefaultEncoding("UTF-8");
-		//		cfg.setClassForTemplateLoading(ConventionalCommit.class, "/templates/");
+		cfg.setLocale(Locale.ENGLISH);
 		cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
 		cfg.setLogTemplateExceptions(false);
 		cfg.setWrapUncheckedExceptions(true);
 		cfg.setFallbackOnNullLoopVariable(false);
 		cfg.setSQLDateAndTimeTimeZone(TimeZone.getDefault());
 		cfg.setTemplateLoader(new ExternalTemplateLoader());
+		cfg.setLocalizedLookup(false);
 	}
 
 	private ConventionalCommitOutput() {
 	}
 
-	public static void write(final ConventionalCommitModel model, final String templateName, final String path)
+	public static void write(final ConventionalCommitModel model, final String templateName, final String output)
 			throws IOException, TemplateException {
 		final Template template = cfg.getTemplate(templateName);
-		try (Writer out = new OutputStreamWriter(new FileOutputStream(Paths.get(path).toFile()))) {
+		final File outputFile = Paths.get(output).toFile();
+		final boolean append = outputFile.exists();
+		try (Writer out = new OutputStreamWriter(new FileOutputStream(outputFile, append))) {
 			template.process(model, out);
 		}
 	}

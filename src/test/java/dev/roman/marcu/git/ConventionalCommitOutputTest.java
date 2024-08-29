@@ -38,4 +38,25 @@ class ConventionalCommitOutputTest {
 
 		assertEquals(expectedContent, actualContent);
 	}
+
+	@Test
+	void testWriteWithAppendTrue() throws TemplateException, IOException, URISyntaxException {
+		final Path outputFile = Path.of(tempDir.toString(), "CHANGELOG.md");
+		final Path templateFile = Path.of("src", "main", "resources", "templates", "CHANGELOG.md.ftl");
+		final ConventionalCommit commit1 = new ConventionalCommit("feat", false, "test", "Junit test 1", null, null);
+		ConventionalCommitModel model = new ConventionalCommitModel("1.2.3", Collections.singletonList(commit1));
+		ConventionalCommitOutput.write(model, templateFile.toString(), outputFile.toString());
+		final ConventionalCommit commit2 = new ConventionalCommit("feat", false, "test", "Junit test 2", null, null);
+		model = new ConventionalCommitModel("3.2.1", Collections.singletonList(commit2));
+		ConventionalCommitOutput.write(model, templateFile.toString(), outputFile.toString());
+
+		assertEquals(true, Files.exists(outputFile));
+		final List<String> actualContent = Files.readAllLines(outputFile);
+		final List<String> expectedContent =
+				Files.readAllLines(
+						Path.of(this.getClass().getClassLoader().getResource("ExpectedChangelogWithAppend.md")
+										.toURI()));
+
+		assertEquals(expectedContent, actualContent);
+	}
 }
