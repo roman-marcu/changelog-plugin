@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.github.roman-marcu</groupId>
@@ -206,6 +207,27 @@
                                 <goals>
                                     <goal>sign</goal>
                                 </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>io.github.roman-marcu</groupId>
+                        <artifactId>changelog-plugin</artifactId>
+                        <version>1.0.0</version>
+                        <executions>
+                            <execution>
+                                <id>generate-changelog</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>git-changelog</goal>
+                                </goals>
+                                <configuration>
+                                    <templateFilePath>./changelog/CHANGELOG.md.ftl
+                                    </templateFilePath>
+                                    <outputFilePath>./CHANGELOG.md</outputFilePath>
+                                    <startRevision>fff362b1</startRevision>
+                                    <endRevision>8ca87482</endRevision>
+                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
