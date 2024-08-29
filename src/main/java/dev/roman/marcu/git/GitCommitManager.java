@@ -85,11 +85,11 @@ public class GitCommitManager implements ConventionalCommitManager<RevCommit, Co
 	}
 
 	@Override
-	public void writeTo(final String template, final String outputDirectory,
+	public void writeTo(final String template, final String outputFile,
 			final String projectVersion, final List<ConventionalCommit> commits) {
 		try {
 			ConventionalCommitModel model = new ConventionalCommitModel(projectVersion, commits);
-			ConventionalCommitOutput.write(model, template, outputDirectory);
+			ConventionalCommitOutput.write(model, template, outputFile);
 		} catch (IOException | TemplateException e) {
 			throw new CommitWritingException(e);
 		}

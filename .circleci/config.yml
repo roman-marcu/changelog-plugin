@@ -52,7 +52,7 @@ not-release-tag: &not-release-tag
     tags:
       ignore: /^v[0-9]+\.[0-9]+\.[0-9]+$/
     branches:
-      ignore: /.*/
+      only: /.*/
 
 workflows:
   commit:
